@@ -1,0 +1,325 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-05-28",
+  "description": "База профилей BLE-устройств для SmartHomeBLE",
+  "devices": [
+    {
+      "device_id": "wolta_lamp_wstd_a60",
+      "device_name": "Умная лампа WOLTA WSTD-A60",
+      "manufacturer": "WOLTA",
+      "category": "lighting",
+      "icon": "lamp",
+      "description": "Светодиодная RGB-лампа с управлением по BLE",
+      
+      "auto_detect": {
+        "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
+        "name_patterns": ["WOLTA", "SmartLife", "Lamp"],
+        "note": "Определяется по сервисному UUID Tuya"
+      },
+      
+      "connection": {
+        "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+        "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb",
+        "write_type": "WRITE_NO_RESPONSE"
+      },
+      
+      "commands": {
+        "power_on": {
+          "name": "Включить",
+          "bytes": [0x55, 0xAA, 0x00, 0x01, 0x00, 0x01, 0x01],
+          "description": "Включает лампу"
+        },
+        "power_off": {
+          "name": "Выключить",
+          "bytes": [0x55, 0xAA, 0x00, 0x01, 0x00, 0x01, 0x00],
+          "description": "Выключает лампу"
+        },
+        "set_brightness": {
+          "name": "Яркость",
+          "bytes": [0x55, 0xAA, 0x00, 0x03, 0x00, 0x02, "VALUE"],
+          "value_position": 6,
+          "value_range": {
+            "min": 0,
+            "max": 255
+          },
+          "description": "Установка яркости (0-255)"
+        },
+        "set_color": {
+          "name": "Цвет RGB",
+          "bytes": [0x55, 0xAA, 0x00, 0x05, 0x00, 0x04, "R", "G", "B"],
+          "value_positions": {"red": 6, "green": 7, "blue": 8},
+          "description": "Установка RGB-цвета"
+        }
+      },
+      
+      "ui_controls": [
+        {
+          "type": "toggle",
+          "label": "Питание",
+          "command_on": "power_on",
+          "command_off": "power_off"
+        },
+        {
+          "type": "slider",
+          "label": "Яркость",
+          "command": "set_brightness",
+          "min": 0,
+          "max": 100,
+          "unit": "%"
+        },
+        {
+          "type": "color_picker",
+          "label": "Цвет",
+          "command": "set_color"
+        }
+      ]
+    },
+    
+    {
+      "device_id": "xiaomi_thermometer_lywsd02",
+      "device_name": "Датчик температуры и влажности Xiaomi",
+      "manufacturer": "Xiaomi",
+      "category": "sensor",
+      "icon": "thermometer",
+      "description": "Цифровой датчик температуры и влажности LYWSD02",
+      
+      "auto_detect": {
+        "service_uuids": ["ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6"],
+        "name_patterns": ["LYWSD02", "LYWSD03MMC"],
+        "manufacturer_id": 0x0157,
+        "note": "Определяется по сервисному UUID Xiaomi MiBeacon"
+      },
+      
+      "connection": {
+        "service_uuid": "ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6",
+        "characteristic_uuid": "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6",
+        "requires_bonding": false
+      },
+      
+      "sensors": {
+        "temperature": {
+          "name": "Температура",
+          "characteristic_uuid": "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6",
+          "type": "notify",
+          "parser": {
+            "offset": 0,
+            "length": 2,
+            "formula": "value / 100.0",
+            "unit": "°C"
+          }
+        },
+        "humidity": {
+          "name": "Влажность",
+          "characteristic_uuid": "ebe0ccc2-7a0a-4b0c-8a1a-6ff2997da3a6",
+          "type": "notify",
+          "parser": {
+            "offset": 0,
+            "length": 2,
+            "formula": "value / 100.0",
+            "unit": "%"
+          }
+        },
+        "battery": {
+          "name": "Заряд батареи",
+          "characteristic_uuid": "00002a19-0000-1000-8000-00805f9b34fb",
+          "type": "read",
+          "parser": {
+            "offset": 0,
+            "length": 1,
+            "formula": "value",
+            "unit": "%"
+          }
+        }
+      },
+      
+      "ui_controls": [
+        {
+          "type": "display",
+          "label": "Температура",
+          "sensor": "temperature",
+          "unit": "°C",
+          "update_interval_ms": 1000
+        },
+        {
+          "type": "display",
+          "label": "Влажность",
+          "sensor": "humidity",
+          "unit": "%",
+          "update_interval_ms": 1000
+        },
+        {
+          "type": "display",
+          "label": "Заряд",
+          "sensor": "battery",
+          "unit": "%",
+          "update_interval_ms": 5000
+        }
+      ]
+    },
+    
+    {
+      "device_id": "relsib_wt51",
+      "device_name": "Кулинарный термометр WT51",
+      "manufacturer": "RELSIB",
+      "category": "sensor",
+      "icon": "thermometer",
+      "description": "Профессиональный кулинарный термометр-щуп с BLE",
+      
+      "auto_detect": {
+        "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
+        "name_patterns": ["WT51", "RELSIB", "BBQ"],
+        "note": "Определяется по имени устройства и сервисному UUID"
+      },
+      
+      "connection": {
+        "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+        "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb"
+      },
+      
+      "sensors": {
+        "temperature": {
+          "name": "Температура",
+          "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb",
+          "type": "notify",
+          "parser": {
+            "offset": 0,
+            "length": 2,
+            "formula": "value / 10.0",
+            "unit": "°C"
+          }
+        }
+      },
+      
+      "ui_controls": [
+        {
+          "type": "display",
+          "label": "Температура щупа",
+          "sensor": "temperature",
+          "unit": "°C",
+          "update_interval_ms": 500,
+          "alert": {
+            "min": 60,
+            "max": 90,
+            "message": "Оптимальная температура для приготовления"
+          }
+        },
+        {
+          "type": "chart",
+          "label": "График температуры",
+          "sensor": "temperature",
+          "history_minutes": 30
+        }
+      ]
+    },
+    
+    {
+      "device_id": "generic_light",
+      "device_name": "Умная лампа (универсальный профиль)",
+      "manufacturer": "Универсальный",
+      "category": "lighting",
+      "icon": "lamp",
+      "description": "Универсальный профиль для неподдерживаемых ламп",
+      
+      "auto_detect": {
+        "note": "Используется когда устройство не опознано, но обнаружены характеристики с WRITE"
+      },
+      
+      "connection": {
+        "auto_discover": true,
+        "note": "Автоматически ищет характеристики с поддержкой записи"
+      },
+      
+      "commands": {
+        "power_on": {
+          "name": "Включить",
+          "bytes": [0x01],
+          "description": "Стандартная команда включения"
+        },
+        "power_off": {
+          "name": "Выключить",
+          "bytes": [0x00],
+          "description": "Стандартная команда выключения"
+        }
+      },
+      
+      "ui_controls": [
+        {
+          "type": "toggle",
+          "label": "Питание",
+          "command_on": "power_on",
+          "command_off": "power_off"
+        },
+        {
+          "type": "slider",
+          "label": "Яркость",
+          "command": "set_brightness",
+          "min": 0,
+          "max": 100,
+          "unit": "%",
+          "note": "Может не поддерживаться устройством"
+        }
+      ]
+    },
+    
+    {
+      "device_id": "nrf_connect_emulator",
+      "device_name": "BLE-эмулятор (nRF Connect)",
+      "manufacturer": "Эмулятор",
+      "category": "emulator",
+      "icon": "emulator",
+      "description": "Виртуальное устройство для отладки",
+      
+      "auto_detect": {
+        "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
+        "name_patterns": ["Lamp", "Emulator", "TestDevice"],
+        "note": "Эмулятор для тестирования приложения"
+      },
+      
+      "connection": {
+        "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+        "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb",
+        "write_type": "WRITE_DEFAULT"
+      },
+      
+      "commands": {
+        "power_on": {
+          "name": "Включить",
+          "bytes": [0x01],
+          "description": "Тестовая команда включения"
+        },
+        "power_off": {
+          "name": "Выключить",
+          "bytes": [0x00],
+          "description": "Тестовая команда выключения"
+        },
+        "set_brightness": {
+          "name": "Яркость",
+          "bytes": [0x02, "VALUE"],
+          "value_position": 1,
+          "value_range": {
+            "min": 0,
+            "max": 100
+          },
+          "description": "Тестовая команда яркости"
+        }
+      },
+      
+      "ui_controls": [
+        {
+          "type": "toggle",
+          "label": "Питание",
+          "command_on": "power_on",
+          "command_off": "power_off"
+        },
+        {
+          "type": "slider",
+          "label": "Яркость",
+          "command": "set_brightness",
+          "min": 0,
+          "max": 100,
+          "unit": "%"
+        }
+      ]
+    }
+  ]
+}
