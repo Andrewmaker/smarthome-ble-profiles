@@ -1,7 +1,7 @@
 {
-  "version": "2.6.0",
+  "version": "2.7.0",
   "last_updated": "2026-06-08",
-  "description": "Полная база профилей BLE-устройств для SmartHome BLE. RGB-лента ELK-BLEDOM полностью рабочая.",
+  "description": "Полная база профилей BLE-устройств для SmartHome BLE. RGB-лента ELK-BLEDOM полностью рабочая (цвета подтверждены).",
   "devices": [
     {
       "device_id": "wolta_lamp_wstd_a60",
@@ -114,7 +114,7 @@
       "manufacturer": "ELK-BLEDOM",
       "category": "lighting",
       "icon": "lamp",
-      "description": "LED-лента ELK-BLEDOM. Протокол: 9 байт с префиксом 7E. Сервис: FFF0, запись в FFF3.",
+      "description": "LED-лента ELK-BLEDOM. Протокол: 9 байт с префиксом 7E. Сервис: FFF0, запись в FFF3. Все команды подтверждены.",
       "auto_detect": {
         "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
         "name_patterns": ["ELK-BLEDOM", "ELK-BLEDOB", "Lotus", "Lantern", "LED"],
@@ -129,7 +129,7 @@
       "commands": {
         "power_on": {"name": "Включить", "bytes": [126, 4, 4, 240, 0, 1, 255, 0, 0], "description": "7E 04 04 F0 00 01 FF 00 EF"},
         "power_off": {"name": "Выключить", "bytes": [126, 4, 4, 0, 0, 0, 0, 0, 0], "description": "7E 04 04 00 00 00 00 00 EF"},
-        "set_color": {"name": "Цвет RGB", "bytes": [126, 7, 5, 3, "R", "G", "B", 0, 0], "value_positions": {"red": 4, "green": 5, "blue": 6}, "description": "7E 07 05 03 RR GG BB 00 CS"},
+        "set_color": {"name": "Цвет RGB", "bytes": [126, 7, 5, 3, "R", "G", "B", 16, 0], "value_positions": {"red": 4, "green": 5, "blue": 6}, "description": "7E 07 05 03 RR GG BB 10 CS"},
         "set_brightness": {"name": "Яркость", "bytes": [126, 4, 4, 240, 0, 1, 255, "VALUE", 0], "value_position": 7, "description": "7E 04 04 F0 00 01 FF XX CS"}
       },
       "ui_controls": [
