@@ -1,7 +1,7 @@
 {
   "version": "2.2.0",
   "last_updated": "2026-06-08",
-  "description": "Универсальная база профилей BLE-устройств для SmartHome BLE. Добавлен график на основной экран WT51.",
+  "description": "Универсальная база профилей BLE-устройств для SmartHome BLE. Убран ползунок Измерение.",
   "devices": [
     {
       "device_id": "wolta_lamp_wstd_a60",
@@ -98,7 +98,6 @@
         {"type": "timer_display", "label": "Время измерения"},
         {"type": "chart", "label": "График температуры", "sensor": "temperature", "history_minutes": 30},
         {"type": "chart_button", "label": "Открыть график", "target_activity": "GraphActivity", "sensor": "temperature", "history_minutes": 30},
-        {"type": "toggle", "label": "Измерение", "command_on": "start_measure", "command_off": "stop_measure"},
         {"type": "slider", "label": "Верхний порог", "command": "set_upper_threshold", "min": -40, "max": 125, "unit": "°C"},
         {"type": "slider", "label": "Нижний порог", "command": "set_lower_threshold", "min": -40, "max": 125, "unit": "°C"},
         {"type": "toggle", "label": "Сигнализация", "command_on": "enable_alarm", "command_off": "disable_alarm"},
@@ -141,13 +140,8 @@
       "category": "unknown",
       "icon": "default",
       "description": "Универсальный профиль для неопознанных устройств",
-      "auto_detect": {
-        "note": "Используется когда устройство не опознано"
-      },
-      "connection": {
-        "auto_discover": true,
-        "note": "Автоматически ищет характеристики"
-      },
+      "auto_detect": { "note": "Используется когда устройство не опознано" },
+      "connection": { "auto_discover": true, "note": "Автоматически ищет характеристики" },
       "commands": {},
       "ui_controls": [
         {"type": "display", "label": "Устройство подключено", "unit": ""},
