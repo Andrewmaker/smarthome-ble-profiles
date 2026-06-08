@@ -108,7 +108,7 @@
         {"type": "export_button", "label": "Экспорт данных", "format": "csv", "sensor": "temperature"}
       ]
     },
-   {
+  {
   "device_id": "lotus_lantern_rgb",
   "device_name": "Светодиодная RGB-лента",
   "manufacturer": "LotusLanternX",
@@ -129,12 +129,6 @@
     "power_off": {"name": "Выключить", "bytes": [0, 0, 0], "description": "Чёрный"},
     "set_color": {"name": "Цвет RGB", "bytes": ["R", "G", "B"], "description": "Три байта RGB"}
   },
-  "ui_controls": [
-    {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
-    {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
-    {"type": "color_picker", "label": "Цвет", "command": "set_color"}
-  ]
-},
   "ui_controls": [
     {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
     {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
