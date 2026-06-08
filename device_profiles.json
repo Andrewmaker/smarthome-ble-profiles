@@ -114,42 +114,27 @@
   "manufacturer": "LotusLanternX",
   "category": "lighting",
   "icon": "lamp",
-  "description": "Умная LED-лента с управлением по BLE. Сервис: FFF0, запись в FFF3.",
+  "description": "Умная LED-лента. Раздельные характеристики RGB.",
   "auto_detect": {
     "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
-    "name_patterns": ["Lotus", "Lantern", "LED", "Triones", "Happy", "ELK"],
-    "note": "Определяется по UUID FFF0 и имени устройства"
+    "name_patterns": ["Lotus", "Lantern", "LED"]
   },
   "connection": {
     "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
-    "characteristic_uuid": "0000fff3-0000-1000-8000-00805f9b34fb",
     "write_type": "WRITE_NO_RESPONSE",
-    "note": "Команды пишутся в FFF3."
+    "note": "Каждый цвет — отдельная характеристика"
   },
   "commands": {
-    "power_on": {
-      "name": "Включить",
-      "bytes": [255, 0, 0, 0],
-      "description": "Включение (красный на полную)"
-    },
-    "power_off": {
-      "name": "Выключить",
-      "bytes": [0, 0, 0, 0],
-      "description": "Выключение (чёрный)"
-    },
-    "set_color": {
-      "name": "Цвет RGB",
-      "bytes": [86, "R", "G", "B"],
-      "value_positions": {"red": 1, "green": 2, "blue": 3},
-      "description": "56 RR GG BB — установка цвета"
-    },
-    "set_brightness": {
-      "name": "Яркость",
-      "bytes": ["VALUE", 0, 0, 0],
-      "value_position": 0,
-      "description": "XX 00 00 00 — установка яркости красного канала"
-    }
+    "power_on": {"name": "Включить", "bytes": [255, 255, 255], "description": "Белый цвет"},
+    "power_off": {"name": "Выключить", "bytes": [0, 0, 0], "description": "Чёрный"},
+    "set_color": {"name": "Цвет RGB", "bytes": ["R", "G", "B"], "description": "Три байта RGB"}
   },
+  "ui_controls": [
+    {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
+    {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
+    {"type": "color_picker", "label": "Цвет", "command": "set_color"}
+  ]
+},
   "ui_controls": [
     {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
     {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
