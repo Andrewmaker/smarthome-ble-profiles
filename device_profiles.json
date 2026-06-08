@@ -1,7 +1,7 @@
 {
-  "version": "2.3.0",
+  "version": "2.4.0",
   "last_updated": "2026-06-08",
-  "description": "Полная база профилей BLE-устройств для SmartHome BLE. Включает WOLTA WSTD-A60 (Tuya), Xiaomi LYWSD02 (MiBeacon), RELSIB WT51, LotusLanternX RGB-ленту, эмулятор и универсальный профиль.",
+  "description": "Полная база профилей BLE-устройств для SmartHome BLE. Добавлена поддержка RGB-ленты Triones (LotusLanternX), Xiaomi LYWSD02, RELSIB WT51, WOLTA WSTD-A60.",
   "devices": [
     {
       "device_id": "wolta_lamp_wstd_a60",
@@ -21,28 +21,10 @@
         "write_type": "WRITE_NO_RESPONSE"
       },
       "commands": {
-        "power_on": {
-          "name": "Включить",
-          "bytes": [85, 170, 0, 1, 0, 1, 1],
-          "description": "Tuya: 55 AA 00 01 00 01 01"
-        },
-        "power_off": {
-          "name": "Выключить",
-          "bytes": [85, 170, 0, 1, 0, 1, 0],
-          "description": "Tuya: 55 AA 00 01 00 01 00"
-        },
-        "set_brightness": {
-          "name": "Яркость",
-          "bytes": [85, 170, 0, 3, 0, 2, "VALUE"],
-          "value_position": 6,
-          "description": "Tuya: 55 AA 00 03 00 02 XX (0-255)"
-        },
-        "set_color": {
-          "name": "Цвет RGB",
-          "bytes": [85, 170, 0, 5, 0, 4, "R", "G", "B"],
-          "value_positions": {"red": 6, "green": 7, "blue": 8},
-          "description": "Tuya: 55 AA 00 05 00 04 RR GG BB"
-        }
+        "power_on": {"name": "Включить", "bytes": [85, 170, 0, 1, 0, 1, 1], "description": "Tuya: 55 AA 00 01 00 01 01"},
+        "power_off": {"name": "Выключить", "bytes": [85, 170, 0, 1, 0, 1, 0], "description": "Tuya: 55 AA 00 01 00 01 00"},
+        "set_brightness": {"name": "Яркость", "bytes": [85, 170, 0, 3, 0, 2, "VALUE"], "value_position": 6, "description": "Tuya: 55 AA 00 03 00 02 XX (0-255)"},
+        "set_color": {"name": "Цвет RGB", "bytes": [85, 170, 0, 5, 0, 4, "R", "G", "B"], "value_positions": {"red": 6, "green": 7, "blue": 8}, "description": "Tuya: 55 AA 00 05 00 04 RR GG BB"}
       },
       "ui_controls": [
         {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
@@ -70,30 +52,8 @@
         "note": "Данные приходят в рекламном пакете (scanRecord), не требуется GATT-подключение"
       },
       "sensors": {
-        "temperature": {
-          "name": "Температура",
-          "characteristic_uuid": "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6",
-          "type": "advertisement",
-          "parser": {
-            "format": "xiaomi_mibeacon",
-            "offset": 10,
-            "length": 2,
-            "formula": "value / 100.0",
-            "unit": "°C"
-          }
-        },
-        "humidity": {
-          "name": "Влажность",
-          "characteristic_uuid": "ebe0ccc2-7a0a-4b0c-8a1a-6ff2997da3a6",
-          "type": "advertisement",
-          "parser": {
-            "format": "xiaomi_mibeacon",
-            "offset": 12,
-            "length": 2,
-            "formula": "value / 100.0",
-            "unit": "%"
-          }
-        }
+        "temperature": {"name": "Температура", "characteristic_uuid": "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6", "type": "advertisement", "parser": {"format": "xiaomi_mibeacon", "offset": 10, "length": 2, "formula": "value / 100.0", "unit": "°C"}},
+        "humidity": {"name": "Влажность", "characteristic_uuid": "ebe0ccc2-7a0a-4b0c-8a1a-6ff2997da3a6", "type": "advertisement", "parser": {"format": "xiaomi_mibeacon", "offset": 12, "length": 2, "formula": "value / 100.0", "unit": "%"}}
       },
       "ui_controls": [
         {"type": "display", "label": "Температура", "sensor": "temperature", "unit": "°C"},
@@ -118,12 +78,7 @@
         "write_type": "WRITE_DEFAULT"
       },
       "sensors": {
-        "temperature": {
-          "name": "Температура щупа",
-          "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb",
-          "type": "notify",
-          "parser": {"offset": 0, "length": 2, "formula": "value / 10.0", "unit": "°C"}
-        }
+        "temperature": {"name": "Температура щупа", "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb", "type": "notify", "parser": {"offset": 0, "length": 2, "formula": "value / 10.0", "unit": "°C"}}
       },
       "commands": {
         "start_measure": {"name": "Старт", "bytes": [1], "description": "Запускает измерение температуры"},
@@ -143,7 +98,7 @@
         {"type": "threshold_lines", "label": "Пороги", "unit": "°C"},
         {"type": "timer_display", "label": "Время измерения"},
         {"type": "chart", "label": "График температуры", "sensor": "temperature", "history_minutes": 30},
-        {"type": "chart_button", "label": "Открыть график", "target_activity": "GraphActivity", "sensor": "temperature", "history_minutes": 30},
+        {"type": "chart_button", "label": "Открыть график", "target_activity": "GraphActivity", "sensor": "temperature"},
         {"type": "toggle", "label": "Измерение", "command_on": "start_measure", "command_off": "stop_measure"},
         {"type": "slider", "label": "Верхний порог", "command": "set_upper_threshold", "min": -40, "max": 125, "unit": "°C"},
         {"type": "slider", "label": "Нижний порог", "command": "set_lower_threshold", "min": -40, "max": 125, "unit": "°C"},
@@ -156,48 +111,32 @@
     {
       "device_id": "lotus_lantern_rgb",
       "device_name": "Светодиодная RGB-лента",
-      "manufacturer": "LotusLanternX",
+      "manufacturer": "LotusLanternX (Triones)",
       "category": "lighting",
       "icon": "lamp",
-      "description": "Умная LED-лента с управлением по BLE (чип Triones/HappyLighting). MAC: BE:37:01:00:72:10. Сервис: FFF0, запись в FFF3.",
+      "description": "Умная LED-лента с управлением по BLE (протокол Triones/ELK-BLEDOM). Сервис: FFF0, запись в FFF3.",
       "auto_detect": {
         "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
-        "name_patterns": ["Lotus", "Lantern", "LED", "Triones", "Happy"],
+        "name_patterns": ["Lotus", "Lantern", "LED", "Triones", "Happy", "ELK"],
         "note": "Определяется по UUID FFF0 и имени устройства"
       },
       "connection": {
         "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
         "characteristic_uuid": "0000fff3-0000-1000-8000-00805f9b34fb",
         "write_type": "WRITE_NO_RESPONSE",
-        "note": "Команды пишутся в FFF3. FFF4 используется для уведомлений."
+        "note": "Команды пишутся в FFF3. FFF4 для уведомлений."
       },
       "commands": {
-        "power_on": {
-          "name": "Включить",
-          "bytes": [204, 35, 51],
-          "description": "0xCC 0x23 0x33 — включение ленты"
-        },
-        "power_off": {
-          "name": "Выключить",
-          "bytes": [204, 36, 51],
-          "description": "0xCC 0x24 0x33 — выключение ленты"
-        },
-        "set_brightness": {
-          "name": "Яркость",
-          "bytes": [86, "VALUE", 0, 0, 0, 240, 170],
-          "value_position": 1,
-          "description": "0x56 XX 00 00 00 F0 AA — установка яркости"
-        },
         "set_color": {
-          "name": "Цвет RGB",
-          "bytes": [86, "R", "G", "B", 0, 240, 170],
-          "value_positions": {"red": 1, "green": 2, "blue": 3},
-          "description": "0x56 RR GG BB 00 F0 AA — установка цвета"
+          "name": "Цвет и яркость",
+          "bytes": [126, 7, 4, 4, "R", "G", "B", "VALUE", 0],
+          "value_positions": {"red": 4, "green": 5, "blue": 6},
+          "value_position": 7,
+          "description": "Triones: 7E 07 04 04 RR GG BB YY CS. Контрольная сумма вычисляется автоматически."
         }
       },
       "ui_controls": [
-        {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
-        {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
+        {"type": "slider", "label": "Яркость", "command": "set_color", "min": 0, "max": 100, "unit": "%"},
         {"type": "color_picker", "label": "Цвет", "command": "set_color"}
       ]
     },
@@ -235,13 +174,8 @@
       "category": "unknown",
       "icon": "default",
       "description": "Универсальный профиль для неопознанных устройств",
-      "auto_detect": {
-        "note": "Используется когда устройство не опознано"
-      },
-      "connection": {
-        "auto_discover": true,
-        "note": "Автоматически ищет характеристики"
-      },
+      "auto_detect": {"note": "Используется когда устройство не опознано"},
+      "connection": {"auto_discover": true, "note": "Автоматически ищет характеристики"},
       "commands": {},
       "ui_controls": [
         {"type": "display", "label": "Устройство подключено", "unit": ""},
