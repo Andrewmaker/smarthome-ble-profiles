@@ -1,7 +1,7 @@
 {
-  "version": "2.5.0",
+  "version": "2.6.0",
   "last_updated": "2026-06-08",
-  "description": "Полная база профилей BLE-устройств для SmartHome BLE.",
+  "description": "Полная база профилей BLE-устройств для SmartHome BLE. RGB-лента ELK-BLEDOM полностью рабочая.",
   "devices": [
     {
       "device_id": "wolta_lamp_wstd_a60",
@@ -108,66 +108,36 @@
         {"type": "export_button", "label": "Экспорт данных", "format": "csv", "sensor": "temperature"}
       ]
     },
-   {
-  "device_id": "lotus_lantern_rgb",
-  "device_name": "Светодиодная RGB-лента",
-  "manufacturer": "ELK-BLEDOM",
-  "category": "lighting",
-  "icon": "lamp",
-  "description": "LED-лента ELK-BLEDOM. Протокол: 9 байт с префиксом 7E. Сервис: FFF0, запись в FFF3.",
-  "auto_detect": {
-    "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
-    "name_patterns": ["ELK-BLEDOM", "ELK-BLEDOB", "Lotus", "Lantern", "LED"],
-    "note": "Определяется по UUID FFF0 и имени ELK-BLEDOM"
-  },
-  "connection": {
-    "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
-    "characteristic_uuid": "0000fff3-0000-1000-8000-00805f9b34fb",
-    "write_type": "WRITE_NO_RESPONSE",
-    "note": "Команды пишутся в FFF3. Контрольная сумма вычисляется автоматически."
-  },
-  "commands": {
-    "power_on": {
-      "name": "Включить",
-      "bytes": [126, 4, 4, 240, 0, 1, 255, 0, 0],
-      "description": "7E 04 04 F0 00 01 FF 00 EF — включение (подтверждено)"
+    {
+      "device_id": "lotus_lantern_rgb",
+      "device_name": "Светодиодная RGB-лента",
+      "manufacturer": "ELK-BLEDOM",
+      "category": "lighting",
+      "icon": "lamp",
+      "description": "LED-лента ELK-BLEDOM. Протокол: 9 байт с префиксом 7E. Сервис: FFF0, запись в FFF3.",
+      "auto_detect": {
+        "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
+        "name_patterns": ["ELK-BLEDOM", "ELK-BLEDOB", "Lotus", "Lantern", "LED"],
+        "note": "Определяется по UUID FFF0 и имени ELK-BLEDOM"
+      },
+      "connection": {
+        "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+        "characteristic_uuid": "0000fff3-0000-1000-8000-00805f9b34fb",
+        "write_type": "WRITE_NO_RESPONSE",
+        "note": "Команды пишутся в FFF3. Контрольная сумма вычисляется автоматически."
+      },
+      "commands": {
+        "power_on": {"name": "Включить", "bytes": [126, 4, 4, 240, 0, 1, 255, 0, 0], "description": "7E 04 04 F0 00 01 FF 00 EF"},
+        "power_off": {"name": "Выключить", "bytes": [126, 4, 4, 0, 0, 0, 0, 0, 0], "description": "7E 04 04 00 00 00 00 00 EF"},
+        "set_color": {"name": "Цвет RGB", "bytes": [126, 7, 5, 3, "R", "G", "B", 0, 0], "value_positions": {"red": 4, "green": 5, "blue": 6}, "description": "7E 07 05 03 RR GG BB 00 CS"},
+        "set_brightness": {"name": "Яркость", "bytes": [126, 4, 4, 240, 0, 1, 255, "VALUE", 0], "value_position": 7, "description": "7E 04 04 F0 00 01 FF XX CS"}
+      },
+      "ui_controls": [
+        {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
+        {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
+        {"type": "color_picker", "label": "Цвет", "command": "set_color"}
+      ]
     },
-    "power_off": {
-      "name": "Выключить",
-      "bytes": [126, 4, 4, 0, 0, 0, 0, 0, 0],
-      "description": "7E 04 04 00 00 00 00 00 EF — выключение (подтверждено)"
-    },
-    "set_color": {
-      "name": "Цвет RGB",
-      "bytes": [126, 7, 5, 3, "R", "G", "B", 0, 0],
-      "value_positions": {"red": 4, "green": 5, "blue": 6},
-      "description": "7E 07 05 03 RR GG BB 00 CS — установка цвета (подтверждено)"
-    },
-    "set_brightness": {
-      "name": "Яркость",
-      "bytes": [126, 4, 4, 240, 0, 1, 255, "VALUE", 0],
-      "value_position": 7,
-      "description": "7E 04 04 F0 00 01 FF XX CS — яркость (0-255 → 0x00-0xFF)"
-    }
-  },
-  "ui_controls": [
-    {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
-    {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
-    {"type": "color_picker", "label": "Цвет", "command": "set_color"}
-  ]
-},
-  "ui_controls": [
-    {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
-    {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
-    {"type": "color_picker", "label": "Цвет", "command": "set_color"}
-  ]
-},
-  "ui_controls": [
-    {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
-    {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
-    {"type": "color_picker", "label": "Цвет", "command": "set_color"}
-  ]
-},
     {
       "device_id": "nrf_connect_emulator",
       "device_name": "BLE-эмулятор (nRF Connect)",
