@@ -1,7 +1,7 @@
 {
-  "version": "2.1.0",
+  "version": "2.2.0",
   "last_updated": "2026-06-08",
-  "description": "Универсальная база профилей BLE-устройств для SmartHome BLE. Добавлены кнопки графиков и экспорта данных.",
+  "description": "Универсальная база профилей BLE-устройств для SmartHome BLE. Добавлен график на основной экран WT51.",
   "devices": [
     {
       "device_id": "wolta_lamp_wstd_a60",
@@ -21,28 +21,10 @@
         "write_type": "WRITE_NO_RESPONSE"
       },
       "commands": {
-        "power_on": {
-          "name": "Включить",
-          "bytes": [85, 170, 0, 1, 0, 1, 1],
-          "description": "Включает лампу"
-        },
-        "power_off": {
-          "name": "Выключить",
-          "bytes": [85, 170, 0, 1, 0, 1, 0],
-          "description": "Выключает лампу"
-        },
-        "set_brightness": {
-          "name": "Яркость",
-          "bytes": [85, 170, 0, 3, 0, 2, "VALUE"],
-          "value_position": 6,
-          "description": "Установка яркости (0-255)"
-        },
-        "set_color": {
-          "name": "Цвет RGB",
-          "bytes": [85, 170, 0, 5, 0, 4, "R", "G", "B"],
-          "value_positions": {"red": 6, "green": 7, "blue": 8},
-          "description": "Установка RGB-цвета"
-        }
+        "power_on": {"name": "Включить", "bytes": [85, 170, 0, 1, 0, 1, 1], "description": "Включает лампу"},
+        "power_off": {"name": "Выключить", "bytes": [85, 170, 0, 1, 0, 1, 0], "description": "Выключает лампу"},
+        "set_brightness": {"name": "Яркость", "bytes": [85, 170, 0, 3, 0, 2, "VALUE"], "value_position": 6, "description": "Установка яркости (0-255)"},
+        "set_color": {"name": "Цвет RGB", "bytes": [85, 170, 0, 5, 0, 4, "R", "G", "B"], "value_positions": {"red": 6, "green": 7, "blue": 8}, "description": "Установка RGB-цвета"}
       },
       "ui_controls": [
         {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
@@ -69,18 +51,8 @@
         "requires_bonding": false
       },
       "sensors": {
-        "temperature": {
-          "name": "Температура",
-          "characteristic_uuid": "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6",
-          "type": "notify",
-          "parser": {"offset": 0, "length": 2, "formula": "value / 100.0", "unit": "°C"}
-        },
-        "humidity": {
-          "name": "Влажность",
-          "characteristic_uuid": "ebe0ccc2-7a0a-4b0c-8a1a-6ff2997da3a6",
-          "type": "notify",
-          "parser": {"offset": 0, "length": 2, "formula": "value / 100.0", "unit": "%"}
-        }
+        "temperature": {"name": "Температура", "characteristic_uuid": "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6", "type": "notify", "parser": {"offset": 0, "length": 2, "formula": "value / 100.0", "unit": "°C"}},
+        "humidity": {"name": "Влажность", "characteristic_uuid": "ebe0ccc2-7a0a-4b0c-8a1a-6ff2997da3a6", "type": "notify", "parser": {"offset": 0, "length": 2, "formula": "value / 100.0", "unit": "%"}}
       },
       "ui_controls": [
         {"type": "display", "label": "Температура", "sensor": "temperature", "unit": "°C"},
@@ -105,12 +77,7 @@
         "write_type": "WRITE_DEFAULT"
       },
       "sensors": {
-        "temperature": {
-          "name": "Температура щупа",
-          "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb",
-          "type": "notify",
-          "parser": {"offset": 0, "length": 2, "formula": "value / 10.0", "unit": "°C"}
-        }
+        "temperature": {"name": "Температура щупа", "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb", "type": "notify", "parser": {"offset": 0, "length": 2, "formula": "value / 10.0", "unit": "°C"}}
       },
       "commands": {
         "start_measure": {"name": "Старт", "bytes": [1], "description": "Запускает измерение температуры"},
@@ -129,7 +96,8 @@
         {"type": "extremum_display", "label": "Экстремумы"},
         {"type": "threshold_lines", "label": "Пороги", "unit": "°C"},
         {"type": "timer_display", "label": "Время измерения"},
-        {"type": "chart_button", "label": "График температуры", "target_activity": "GraphActivity", "sensor": "temperature", "history_minutes": 30},
+        {"type": "chart", "label": "График температуры", "sensor": "temperature", "history_minutes": 30},
+        {"type": "chart_button", "label": "Открыть график", "target_activity": "GraphActivity", "sensor": "temperature", "history_minutes": 30},
         {"type": "toggle", "label": "Измерение", "command_on": "start_measure", "command_off": "stop_measure"},
         {"type": "slider", "label": "Верхний порог", "command": "set_upper_threshold", "min": -40, "max": 125, "unit": "°C"},
         {"type": "slider", "label": "Нижний порог", "command": "set_lower_threshold", "min": -40, "max": 125, "unit": "°C"},
