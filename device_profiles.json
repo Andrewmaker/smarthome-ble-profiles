@@ -1,7 +1,7 @@
 {
-  "version": "2.4.1",
+  "version": "2.5.0",
   "last_updated": "2026-06-08",
-  "description": "Полная база профилей BLE-устройств для SmartHome BLE. Исправлен профиль RGB-ленты (упрощённый протокол).",
+  "description": "Полная база профилей BLE-устройств для SmartHome BLE.",
   "devices": [
     {
       "device_id": "wolta_lamp_wstd_a60",
@@ -21,10 +21,10 @@
         "write_type": "WRITE_NO_RESPONSE"
       },
       "commands": {
-        "power_on": {"name": "Включить", "bytes": [85, 170, 0, 1, 0, 1, 1], "description": "Tuya: 55 AA 00 01 00 01 01"},
-        "power_off": {"name": "Выключить", "bytes": [85, 170, 0, 1, 0, 1, 0], "description": "Tuya: 55 AA 00 01 00 01 00"},
-        "set_brightness": {"name": "Яркость", "bytes": [85, 170, 0, 3, 0, 2, "VALUE"], "value_position": 6, "description": "Tuya: 55 AA 00 03 00 02 XX"},
-        "set_color": {"name": "Цвет RGB", "bytes": [85, 170, 0, 5, 0, 4, "R", "G", "B"], "value_positions": {"red": 6, "green": 7, "blue": 8}, "description": "Tuya: 55 AA 00 05 00 04 RR GG BB"}
+        "power_on": {"name": "Включить", "bytes": [85, 170, 0, 1, 0, 1, 1]},
+        "power_off": {"name": "Выключить", "bytes": [85, 170, 0, 1, 0, 1, 0]},
+        "set_brightness": {"name": "Яркость", "bytes": [85, 170, 0, 3, 0, 2, "VALUE"], "value_position": 6},
+        "set_color": {"name": "Цвет RGB", "bytes": [85, 170, 0, 5, 0, 4, "R", "G", "B"], "value_positions": {"red": 6, "green": 7, "blue": 8}}
       },
       "ui_controls": [
         {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
@@ -108,33 +108,36 @@
         {"type": "export_button", "label": "Экспорт данных", "format": "csv", "sensor": "temperature"}
       ]
     },
-  {
-  "device_id": "lotus_lantern_rgb",
-  "device_name": "Светодиодная RGB-лента",
-  "manufacturer": "LotusLanternX",
-  "category": "lighting",
-  "icon": "lamp",
-  "description": "Умная LED-лента. Раздельные характеристики RGB.",
-  "auto_detect": {
-    "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
-    "name_patterns": ["Lotus", "Lantern", "LED"]
-  },
-  "connection": {
-    "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
-    "write_type": "WRITE_NO_RESPONSE",
-    "note": "Каждый цвет — отдельная характеристика"
-  },
-  "commands": {
-    "power_on": {"name": "Включить", "bytes": [255, 255, 255], "description": "Белый цвет"},
-    "power_off": {"name": "Выключить", "bytes": [0, 0, 0], "description": "Чёрный"},
-    "set_color": {"name": "Цвет RGB", "bytes": ["R", "G", "B"], "description": "Три байта RGB"}
-  },
-  "ui_controls": [
-    {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
-    {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
-    {"type": "color_picker", "label": "Цвет", "command": "set_color"}
-  ]
-},
+    {
+      "device_id": "lotus_lantern_rgb",
+      "device_name": "Светодиодная RGB-лента",
+      "manufacturer": "LotusLanternX",
+      "category": "lighting",
+      "icon": "lamp",
+      "description": "LED-лента с BLE. Сервис: FFF0, запись в FFF3. Для точных команд требуется перехват через nRF Connect.",
+      "auto_detect": {
+        "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
+        "name_patterns": ["Lotus", "Lantern", "LED", "Triones", "Happy", "ELK"],
+        "note": "Определяется по UUID FFF0"
+      },
+      "connection": {
+        "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+        "characteristic_uuid": "0000fff3-0000-1000-8000-00805f9b34fb",
+        "write_type": "WRITE_NO_RESPONSE",
+        "note": "Требуется перехват команд из родного приложения LotusLanternX через nRF Connect"
+      },
+      "commands": {
+        "power_on": {"name": "Включить", "bytes": [1], "description": "Заменить после перехвата"},
+        "power_off": {"name": "Выключить", "bytes": [0], "description": "Заменить после перехвата"},
+        "set_color": {"name": "Цвет", "bytes": [255, 0, 0], "description": "Заменить после перехвата"},
+        "set_brightness": {"name": "Яркость", "bytes": [128], "description": "Заменить после перехвата"}
+      },
+      "ui_controls": [
+        {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
+        {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
+        {"type": "color_picker", "label": "Цвет", "command": "set_color"}
+      ]
+    },
     {
       "device_id": "nrf_connect_emulator",
       "device_name": "BLE-эмулятор (nRF Connect)",
@@ -170,7 +173,7 @@
       "icon": "default",
       "description": "Универсальный профиль для неопознанных устройств",
       "auto_detect": {"note": "Используется когда устройство не опознано"},
-      "connection": {"auto_discover": true, "note": "Автоматически ищет характеристики"},
+      "connection": {"auto_discover": true},
       "commands": {},
       "ui_controls": [
         {"type": "display", "label": "Устройство подключено", "unit": ""},
