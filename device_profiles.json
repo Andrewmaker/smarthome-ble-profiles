@@ -109,35 +109,53 @@
       ]
     },
     {
-      "device_id": "lotus_lantern_rgb",
-      "device_name": "Светодиодная RGB-лента",
-      "manufacturer": "LotusLanternX",
-      "category": "lighting",
-      "icon": "lamp",
-      "description": "LED-лента с BLE. Сервис: FFF0, запись в FFF3. Для точных команд требуется перехват через nRF Connect.",
-      "auto_detect": {
-        "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
-        "name_patterns": ["Lotus", "Lantern", "LED", "Triones", "Happy", "ELK"],
-        "note": "Определяется по UUID FFF0"
-      },
-      "connection": {
-        "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
-        "characteristic_uuid": "0000fff3-0000-1000-8000-00805f9b34fb",
-        "write_type": "WRITE_NO_RESPONSE",
-        "note": "Требуется перехват команд из родного приложения LotusLanternX через nRF Connect"
-      },
-      "commands": {
-        "power_on": {"name": "Включить", "bytes": [1], "description": "Заменить после перехвата"},
-        "power_off": {"name": "Выключить", "bytes": [0], "description": "Заменить после перехвата"},
-        "set_color": {"name": "Цвет", "bytes": [255, 0, 0], "description": "Заменить после перехвата"},
-        "set_brightness": {"name": "Яркость", "bytes": [128], "description": "Заменить после перехвата"}
-      },
-      "ui_controls": [
-        {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
-        {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
-        {"type": "color_picker", "label": "Цвет", "command": "set_color"}
-      ]
+  "device_id": "lotus_lantern_rgb",
+  "device_name": "Светодиодная RGB-лента",
+  "manufacturer": "LotusLanternX",
+  "category": "lighting",
+  "icon": "lamp",
+  "description": "LED-лента с BLE. Сервис: FFF0, запись в FFF3. Команды: 1 байт.",
+  "auto_detect": {
+    "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
+    "name_patterns": ["Lotus", "Lantern", "LED", "Triones", "Happy", "ELK"],
+    "note": "Определяется по UUID FFF0"
+  },
+  "connection": {
+    "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+    "characteristic_uuid": "0000fff3-0000-1000-8000-00805f9b34fb",
+    "write_type": "WRITE_NO_RESPONSE",
+    "note": "Команды пишутся в FFF3."
+  },
+  "commands": {
+    "power_on": {
+      "name": "Включить",
+      "bytes": [0],
+      "description": "0x00 — включение (проверьте!)"
     },
+    "power_off": {
+      "name": "Выключить",
+      "bytes": [255],
+      "description": "0xFF — выключение (подтверждено)"
+    },
+    "set_color": {
+      "name": "Цвет RGB",
+      "bytes": ["R", "G", "B"],
+      "value_positions": {"red": 0, "green": 1, "blue": 2},
+      "description": "RR GG BB (3 байта) — замените после перехвата"
+    },
+    "set_brightness": {
+      "name": "Яркость",
+      "bytes": ["VALUE"],
+      "value_position": 0,
+      "description": "XX (1 байт) — замените после перехвата"
+    }
+  },
+  "ui_controls": [
+    {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
+    {"type": "slider", "label": "Яркость", "command": "set_brightness", "min": 0, "max": 100, "unit": "%"},
+    {"type": "color_picker", "label": "Цвет", "command": "set_color"}
+  ]
+},
     {
       "device_id": "nrf_connect_emulator",
       "device_name": "BLE-эмулятор (nRF Connect)",
