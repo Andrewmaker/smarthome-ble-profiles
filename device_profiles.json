@@ -1,10 +1,18 @@
 {
-  "version": "2.8.0",
-  "last_updated": "2026-06-08",
-  "description": "Полная база профилей BLE-устройств для SmartHome BLE. Контрольная сумма ELK-BLEDOM исправлена (фиксированная 0xEF).",
+  "version": "3.1.0",
+  "last_updated": "2026-06-15",
+  "description": "Полная база профилей BLE-устройств для SmartHome BLE. Добавлена кнопка истории измерений для WT51.",
+  "categories": [
+    {"id": "lighting", "name": "Освещение", "icon": "lamp"},
+    {"id": "sensor", "name": "Датчики", "icon": "thermometer"},
+    {"id": "relay", "name": "Реле и розетки", "icon": "power"},
+    {"id": "lock", "name": "Замки", "icon": "lock"},
+    {"id": "other", "name": "Прочее", "icon": "default"}
+  ],
   "devices": [
     {
       "device_id": "wolta_lamp_wstd_a60",
+      "version": "1.0.0",
       "device_name": "Умная лампа WOLTA WSTD-A60",
       "manufacturer": "WOLTA (Tuya)",
       "category": "lighting",
@@ -21,10 +29,10 @@
         "write_type": "WRITE_NO_RESPONSE"
       },
       "commands": {
-        "power_on": {"name": "Включить", "bytes": [85, 170, 0, 1, 0, 1, 1]},
-        "power_off": {"name": "Выключить", "bytes": [85, 170, 0, 1, 0, 1, 0]},
-        "set_brightness": {"name": "Яркость", "bytes": [85, 170, 0, 3, 0, 2, "VALUE"], "value_position": 6},
-        "set_color": {"name": "Цвет RGB", "bytes": [85, 170, 0, 5, 0, 4, "R", "G", "B"], "value_positions": {"red": 6, "green": 7, "blue": 8}}
+        "power_on": {"name": "Включить", "bytes": [85, 170, 0, 1, 0, 1, 1], "description": "55 AA 00 01 00 01 01"},
+        "power_off": {"name": "Выключить", "bytes": [85, 170, 0, 1, 0, 1, 0], "description": "55 AA 00 01 00 01 00"},
+        "set_brightness": {"name": "Яркость", "bytes": [85, 170, 0, 3, 0, 2, "VALUE"], "value_position": 6, "description": "55 AA 00 03 00 02 XX (0-255)"},
+        "set_color": {"name": "Цвет RGB", "bytes": [85, 170, 0, 5, 0, 4, "R", "G", "B"], "value_positions": {"red": 6, "green": 7, "blue": 8}, "description": "55 AA 00 05 00 04 RR GG BB"}
       },
       "ui_controls": [
         {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
@@ -34,11 +42,12 @@
     },
     {
       "device_id": "xiaomi_thermometer_lywsd02",
+      "version": "1.0.0",
       "device_name": "Датчик температуры и влажности Xiaomi LYWSD02",
       "manufacturer": "Xiaomi",
       "category": "sensor",
       "icon": "thermometer",
-      "description": "Цифровой датчик с BLE. Протокол: Xiaomi MiBeacon. Manufacturer ID: 343.",
+      "description": "Цифровой датчик с BLE. Протокол: Xiaomi MiBeacon. Данные в рекламном пакете. Manufacturer ID: 343.",
       "auto_detect": {
         "service_uuids": ["ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6"],
         "name_patterns": ["LYWSD02", "LYWSD03MMC"],
@@ -49,7 +58,7 @@
         "service_uuid": "ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6",
         "characteristic_uuid": "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6",
         "requires_bonding": false,
-        "note": "Данные приходят в рекламном пакете"
+        "note": "Данные приходят в рекламном пакете, не требуется GATT-подключение"
       },
       "sensors": {
         "temperature": {"name": "Температура", "characteristic_uuid": "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6", "type": "advertisement", "parser": {"offset": 10, "length": 2, "formula": "value / 100.0", "unit": "°C"}},
@@ -62,11 +71,12 @@
     },
     {
       "device_id": "relsib_wt51",
+      "version": "2.0.0",
       "device_name": "Кулинарный термометр WT51 RELSIB",
       "manufacturer": "RELSIB",
       "category": "sensor",
       "icon": "thermometer",
-      "description": "Профессиональный кулинарный термометр-щуп с Bluetooth. Диапазон: -40...+125°C.",
+      "description": "Профессиональный кулинарный термометр-щуп с Bluetooth. Диапазон: -40...+125°C. Точность: ±0.5°C.",
       "auto_detect": {
         "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
         "name_patterns": ["WT51", "RELSIB", "BBQ", "Thermometer"],
@@ -81,15 +91,15 @@
         "temperature": {"name": "Температура щупа", "characteristic_uuid": "0000fff1-0000-1000-8000-00805f9b34fb", "type": "notify", "parser": {"offset": 0, "length": 2, "formula": "value / 10.0", "unit": "°C"}}
       },
       "commands": {
-        "start_measure": {"name": "Старт", "bytes": [1]},
-        "stop_measure": {"name": "Стоп", "bytes": [0]},
-        "set_unit_celsius": {"name": "°C", "bytes": [2, 0]},
-        "set_unit_fahrenheit": {"name": "°F", "bytes": [2, 1]},
-        "set_upper_threshold": {"name": "Верхний порог", "bytes": [3, "VALUE"], "value_position": 1},
-        "set_lower_threshold": {"name": "Нижний порог", "bytes": [4, "VALUE"], "value_position": 1},
-        "enable_alarm": {"name": "Сигнал ВКЛ", "bytes": [5, 1]},
-        "disable_alarm": {"name": "Сигнал ВЫКЛ", "bytes": [5, 0]},
-        "reset_session": {"name": "Сброс", "bytes": [6]}
+        "start_measure": {"name": "Старт", "bytes": [1], "description": "Запускает измерение температуры"},
+        "stop_measure": {"name": "Стоп", "bytes": [0], "description": "Останавливает измерение"},
+        "set_unit_celsius": {"name": "°C", "bytes": [2, 0], "description": "Устанавливает градусы Цельсия"},
+        "set_unit_fahrenheit": {"name": "°F", "bytes": [2, 1], "description": "Устанавливает градусы Фаренгейта"},
+        "set_upper_threshold": {"name": "Верхний порог", "bytes": [3, "VALUE"], "value_position": 1, "description": "Установка верхнего порога сигнализации"},
+        "set_lower_threshold": {"name": "Нижний порог", "bytes": [4, "VALUE"], "value_position": 1, "description": "Установка нижнего порога сигнализации"},
+        "enable_alarm": {"name": "Сигнал ВКЛ", "bytes": [5, 1], "description": "Включает звуковую сигнализацию"},
+        "disable_alarm": {"name": "Сигнал ВЫКЛ", "bytes": [5, 0], "description": "Выключает звуковую сигнализацию"},
+        "reset_session": {"name": "Сброс", "bytes": [6], "description": "Сбрасывает Max/Min и перезапускает таймер"}
       },
       "ui_controls": [
         {"type": "thermometer_display", "label": "Температура щупа", "sensor": "temperature", "unit": "°C"},
@@ -97,8 +107,9 @@
         {"type": "extremum_display", "label": "Экстремумы"},
         {"type": "threshold_lines", "label": "Пороги", "unit": "°C"},
         {"type": "timer_display", "label": "Время измерения"},
-        {"type": "chart", "label": "График температуры", "sensor": "temperature"},
+        {"type": "chart", "label": "График температуры", "sensor": "temperature", "history_minutes": 30},
         {"type": "chart_button", "label": "Открыть график", "target_activity": "GraphActivity", "sensor": "temperature"},
+        {"type": "history_button", "label": "История измерений", "target_activity": "MeasurementHistoryActivity"},
         {"type": "toggle", "label": "Измерение", "command_on": "start_measure", "command_off": "stop_measure"},
         {"type": "slider", "label": "Верхний порог", "command": "set_upper_threshold", "min": -40, "max": 125, "unit": "°C"},
         {"type": "slider", "label": "Нижний порог", "command": "set_lower_threshold", "min": -40, "max": 125, "unit": "°C"},
@@ -110,11 +121,12 @@
     },
     {
       "device_id": "lotus_lantern_rgb",
+      "version": "1.0.0",
       "device_name": "Светодиодная RGB-лента",
       "manufacturer": "ELK-BLEDOM",
       "category": "lighting",
       "icon": "lamp",
-      "description": "LED-лента ELK-BLEDOM. Протокол: 9 байт с префиксом 7E. Сервис: FFF0, запись в FFF3. Все команды подтверждены.",
+      "description": "LED-лента ELK-BLEDOM. Протокол: 9 байт с префиксом 7E. Сервис: FFF0, запись в FFF3.",
       "auto_detect": {
         "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
         "name_patterns": ["ELK-BLEDOM", "ELK-BLEDOB", "Lotus", "Lantern", "LED"],
@@ -124,7 +136,7 @@
         "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
         "characteristic_uuid": "0000fff3-0000-1000-8000-00805f9b34fb",
         "write_type": "WRITE_NO_RESPONSE",
-        "note": "Команды пишутся в FFF3. Контрольная сумма ВЫКЛЮЧЕНА."
+        "note": "Команды пишутся в FFF3."
       },
       "commands": {
         "power_on": {"name": "Включить", "bytes": [126, 4, 4, 240, 0, 1, 255, 0, 239], "description": "7E 04 04 F0 00 01 FF 00 EF"},
@@ -140,11 +152,12 @@
     },
     {
       "device_id": "nrf_connect_emulator",
+      "version": "1.0.0",
       "device_name": "BLE-эмулятор (nRF Connect)",
       "manufacturer": "Эмулятор",
       "category": "emulator",
       "icon": "emulator",
-      "description": "Виртуальное устройство для отладки",
+      "description": "Виртуальное устройство для отладки и тестирования.",
       "auto_detect": {
         "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
         "name_patterns": ["Lamp", "Emulator", "TestDevice"],
@@ -156,9 +169,9 @@
         "write_type": "WRITE_DEFAULT"
       },
       "commands": {
-        "power_on": {"name": "Включить", "bytes": [1]},
-        "power_off": {"name": "Выключить", "bytes": [0]},
-        "set_brightness": {"name": "Яркость", "bytes": [2, "VALUE"], "value_position": 1}
+        "power_on": {"name": "Включить", "bytes": [1], "description": "Тестовая команда включения"},
+        "power_off": {"name": "Выключить", "bytes": [0], "description": "Тестовая команда выключения"},
+        "set_brightness": {"name": "Яркость", "bytes": [2, "VALUE"], "value_position": 1, "description": "Тестовая команда яркости"}
       },
       "ui_controls": [
         {"type": "toggle", "label": "Питание", "command_on": "power_on", "command_off": "power_off"},
@@ -167,13 +180,14 @@
     },
     {
       "device_id": "generic_device",
+      "version": "1.0.0",
       "device_name": "Неизвестное устройство",
       "manufacturer": "Универсальный",
       "category": "unknown",
       "icon": "default",
-      "description": "Универсальный профиль для неопознанных устройств",
+      "description": "Универсальный профиль для неопознанных устройств.",
       "auto_detect": {"note": "Используется когда устройство не опознано"},
-      "connection": {"auto_discover": true},
+      "connection": {"auto_discover": true, "note": "Автоматически ищет характеристики"},
       "commands": {},
       "ui_controls": [
         {"type": "display", "label": "Устройство подключено", "unit": ""},
